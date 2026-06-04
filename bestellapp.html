@@ -22,8 +22,8 @@
     --border: rgba(0,0,0,0.07);
     --font: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif; --mono: 'SF Mono', SFMono-Regular, ui-monospace, monospace;
   }
-  html, body { height:100%; width:100%; overflow:hidden; background:var(--bg); font-family:var(--font); color:var(--text-primary); -webkit-tap-highlight-color:transparent; -webkit-font-smoothing:antialiased; }
-  #app { display:flex; flex-direction:column; height:100dvh; max-width:480px; margin:0 auto; padding:10px 10px env(safe-area-inset-bottom, 16px); gap:7px; overflow:hidden; }
+  html, body { height:100%; width:100%; overflow:auto; background:var(--bg); font-family:var(--font); color:var(--text-primary); -webkit-tap-highlight-color:transparent; -webkit-font-smoothing:antialiased; }
+  #app { display:flex; flex-direction:column; min-height:100dvh; max-width:480px; margin:0 auto; padding:10px 10px 20px; gap:7px; }
 
   /* TOP BAR */
   .top-bar { display:flex; align-items:center; gap:8px; flex-shrink:0; }
