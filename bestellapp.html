@@ -54,7 +54,7 @@
   .product-num { font-size:30px; font-weight:800; color:var(--text-primary); line-height:1; }
   .product-price { font-size:13px; font-weight:500; color:var(--text-secondary); font-family:var(--mono); }
 
-  /* RECEIPT */
+  /* BESTELLUNG */
   .receipt-section { flex:1; background:var(--card); border-radius:16px; box-shadow:var(--card-shadow); display:flex; flex-direction:column; overflow:hidden; min-height:0; }
   .receipt-header { display:flex; align-items:center; justify-content:space-between; padding:5px 11px 4px; border-bottom:1px solid var(--border); flex-shrink:0; }
   .receipt-title { font-size:10px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-secondary); }
@@ -71,8 +71,13 @@
   .remove-btn:active { transform:scale(0.9); }
 
   /* CALC BTN */
-  .calc-btn { background:var(--accent); color:var(--accent-text); border:none; border-radius:16px; padding:0 20px; height:54px; font-size:17px; font-weight:700; font-family:var(--font); cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; flex-shrink:0; transition:transform 0.1s,background 0.3s; -webkit-tap-highlight-color:transparent; }
-  .calc-btn:active { transform:scale(0.97); }
+  .calc-btn { background:var(--accent); color:var(--accent-text); border:none; border-radius:16px; padding:0 20px; height:54px; font-size:17px; font-weight:700; font-family:var(--font); cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; transition:transform 0.1s,background 0.3s; -webkit-tap-highlight-color:transparent;
+  position:fixed; bottom:16px; left:50%; transform:translateX(-50%); width:calc(100% - 32px); max-width:448px; z-index:50;
+  box-shadow:0 4px 20px rgba(0,0,0,0.25); }
+.calc-btn:active { transform:translateX(-50%) scale(0.97); }
+/* spacer so content doesn't hide behind fixed button */
+.calc-spacer { height:78px; flex-shrink:0; }
+  
   .calc-btn.showing-total { background:#2D7A4F; }
 
   /* MODAL BASE */
@@ -122,7 +127,7 @@
     <button class="icon-btn" id="settingsBtn">&#9881;&#65039;</button>
     <div class="drinks-calc" id="drinksCalc">
       <div class="drinks-label">Getränke</div>
-      <div class="drinks-display" id="drinksDisplay">Tippen zum Eingeben</div>
+      <div class="drinks-display" id="drinksDisplay">Tippen zum Rechnen</div>
     </div>
     <div class="season-slider" id="seasonToggle">
       <div class="season-track" id="seasonTrack">
@@ -141,19 +146,20 @@
 
   <div class="receipt-section">
     <div class="receipt-header">
-      <span class="receipt-title">Receipt</span>
-      <button class="clear-btn" id="clearBtn">Clear</button>
+      <span class="receipt-title">Bestellung</span>
+      <button class="clear-btn" id="clearBtn">Leeren</button>
     </div>
     <div class="receipt-list" id="receiptList">
-      <div class="receipt-empty" id="receiptEmpty">No items added yet</div>
+      <div class="receipt-empty" id="receiptEmpty">Noch nichts hinzugefügt</div>
     </div>
   </div>
 
   <button class="calc-btn" id="calcBtn">
     <span>&#129534;</span>
-    <span id="calcBtnText">Calculate Total</span>
+    <span id="calcBtnText">Gesamtpreis berechnen</span>
   </button>
 </div>
+  <div class="calc-spacer"></div>
 
 <!-- DRINKS MODAL -->
 <div class="modal-overlay" id="drinksModal">
@@ -180,7 +186,7 @@
       <button class="numpad-btn" data-val="0">0</button>
       <button class="numpad-btn del-btn" data-val="del">&#9003;</button>
       <button class="numpad-btn op-btn" data-val="÷">÷</button>
-      <button class="numpad-btn add-drinks" id="addDrinksToReceipt">&#10133; Zu Receipt</button>
+      <button class="numpad-btn add-drinks" id="addDrinksToBestellung">&#10133; Zu Bestellung</button>
       <button class="numpad-btn confirm-btn" id="drinksConfirm">= Berechnen</button>
     </div>
   </div>
@@ -249,7 +255,7 @@ function renderDrinksExpr() {
 
 function renderDrinksDisplay() {
   const d = document.getElementById('drinksDisplay');
-  d.textContent = state.drinksTotal !== null ? '= '+state.drinksTotal.toFixed(2)+'€' : 'Tippen zum Eingeben';
+  d.textContent = state.drinksTotal !== null ? '= '+state.drinksTotal.toFixed(2)+'€' : 'Tippen zum Rechnen';
 }
 
 document.querySelectorAll('.numpad-btn[data-val]').forEach(btn => {
@@ -274,14 +280,14 @@ document.getElementById('drinksConfirm').addEventListener('click', () => {
   if (r!==null) { drinksExpr=String(r); renderDrinksExpr(); }
 });
 
-document.getElementById('addDrinksToReceipt').addEventListener('click', () => {
+document.getElementById('addDrinksToBestellung').addEventListener('click', () => {
   if (!drinksExpr) return;
   const r = evalExpr(drinksExpr);
   if (r===null) return;
   state.drinksTotal=r;
   state.receipt.push({name:'Getränke: '+drinksExpr+'€', price:r});
   state.showingTotal=false;
-  saveState(); renderReceipt(); renderCalcBtn(); renderDrinksDisplay(); closeDrinksModal();
+  saveState(); renderBestellung(); renderCalcBtn(); renderDrinksDisplay(); closeDrinksModal();
 });
 
 function openDrinksModal() { drinksExpr=''; renderDrinksExpr(); document.getElementById('drinksModal').classList.add('active'); }
@@ -297,13 +303,13 @@ function renderGrid() {
     const btn=document.createElement('button');
     btn.className='product-btn';
     btn.innerHTML='<div class="product-num">'+escHtml(item.name)+'</div><div class="product-price">€'+item.price.toFixed(2)+'</div>';
-    btn.addEventListener('click',()=>addToReceipt(item,btn));
+    btn.addEventListener('click',()=>addToBestellung(item,btn));
     grid.appendChild(btn);
   });
 }
 
-// RENDER RECEIPT
-function renderReceipt() {
+// RENDER BESTELLUNG
+function renderBestellung() {
   const list=document.getElementById('receiptList');
   const empty=document.getElementById('receiptEmpty');
   if(state.receipt.length===0){ list.innerHTML=''; list.appendChild(empty); empty.style.display='flex'; return; }
@@ -312,7 +318,7 @@ function renderReceipt() {
     const row=document.createElement('div');
     row.className='receipt-item';
     row.innerHTML='<span class="receipt-item-name">'+escHtml(entry.name)+'</span><span class="receipt-item-price">€'+entry.price.toFixed(2)+'</span><button class="remove-btn">✕</button>';
-    row.querySelector('.remove-btn').addEventListener('click',()=>removeFromReceipt(idx));
+    row.querySelector('.remove-btn').addEventListener('click',()=>removeFromBestellung(idx));
     list.appendChild(row);
   });
   list.appendChild(empty);
@@ -323,7 +329,7 @@ function renderCalcBtn() {
   const btn=document.getElementById('calcBtn');
   const txt=document.getElementById('calcBtnText');
   const t=state.receipt.reduce((s,e)=>s+e.price,0);
-  if(state.receipt.length===0){ txt.textContent='Calculate Total'; btn.classList.remove('showing-total'); }
+  if(state.receipt.length===0){ txt.textContent='Gesamtpreis berechnen'; btn.classList.remove('showing-total'); }
   else { txt.textContent='Total: '+t.toFixed(2)+'€'; btn.classList.add('showing-total'); }
 }
 
@@ -333,19 +339,19 @@ function renderSeason() {
   state.season==='winter' ? track.classList.add('is-winter') : track.classList.remove('is-winter');
 }
 
-function renderAll() { renderGrid(); renderReceipt(); renderCalcBtn(); renderSeason(); renderDrinksDisplay(); }
+function renderAll() { renderGrid(); renderBestellung(); renderCalcBtn(); renderSeason(); renderDrinksDisplay(); }
 
 // ACTIONS
-function addToReceipt(item,btn) {
+function addToBestellung(item,btn) {
   btn.classList.remove('flash'); void btn.offsetWidth; btn.classList.add('flash');
   state.receipt.push({name:item.name,price:item.price});
-  state.showingTotal=false; saveState(); renderReceipt(); renderCalcBtn();
+  state.showingTotal=false; saveState(); renderBestellung(); renderCalcBtn();
 }
-function removeFromReceipt(idx) { state.receipt.splice(idx,1); state.showingTotal=false; saveState(); renderReceipt(); renderCalcBtn(); }
-function clearReceipt() { state.receipt=[]; state.drinksTotal=null; state.showingTotal=false; saveState(); renderReceipt(); renderCalcBtn(); renderDrinksDisplay(); }
+function removeFromBestellung(idx) { state.receipt.splice(idx,1); state.showingTotal=false; saveState(); renderBestellung(); renderCalcBtn(); }
+function clearBestellung() { state.receipt=[]; state.drinksTotal=null; state.showingTotal=false; saveState(); renderBestellung(); renderCalcBtn(); renderDrinksDisplay(); }
 
 document.getElementById('seasonToggle').addEventListener('click',()=>{ state.season=state.season==='summer'?'winter':'summer'; saveState(); renderSeason(); renderGrid(); });
-document.getElementById('clearBtn').addEventListener('click',clearReceipt);
+document.getElementById('clearBtn').addEventListener('click',clearBestellung);
 document.getElementById('calcBtn').addEventListener('click',()=>{ /* total always shown, no toggle needed */ });
 
 // SETTINGS
