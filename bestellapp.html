@@ -71,14 +71,76 @@
   .remove-btn:active { transform:scale(0.9); }
 
   /* CALC BTN */
-  .calc-btn { background:var(--accent); color:var(--accent-text); border:none; border-radius:16px; padding:0 20px; height:54px; font-size:17px; font-weight:700; font-family:var(--font); cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; transition:transform 0.1s,background 0.3s; -webkit-tap-highlight-color:transparent;
-  position:fixed; bottom:16px; left:50%; transform:translateX(-50%); width:calc(100% - 32px); max-width:448px; z-index:50;
-  box-shadow:0 4px 20px rgba(0,0,0,0.25); }
-.calc-btn:active { transform:translateX(-50%) scale(0.97); }
-/* spacer so content doesn't hide behind fixed button */
-.calc-spacer { height:78px; flex-shrink:0; }
+  .calc-btn-container { 
+    position: fixed; 
+    bottom: 16px; 
+    left: 50%; 
+    transform: translateX(-50%); 
+    width: calc(100% - 32px); 
+    max-width: 448px; 
+    z-index: 50; 
+    display: flex; 
+    gap: 0; 
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25); 
+    border-radius: 16px; 
+    overflow: hidden; 
+  }
   
-  .calc-btn.showing-total { background:#2D7A4F; }
+  .calc-btn { 
+    background: var(--accent); 
+    color: var(--accent-text); 
+    border: none; 
+    padding: 0 20px; 
+    height: 54px; 
+    font-size: 17px; 
+    font-weight: 700; 
+    font-family: var(--font); 
+    cursor: pointer; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    gap: 8px; 
+    transition: transform 0.1s, background 0.3s; 
+    -webkit-tap-highlight-color: transparent; 
+    flex: 2; 
+  }
+  
+  .calc-btn:active { 
+    transform: scale(0.97); 
+  }
+  
+  .delete-btn { 
+    background: var(--danger); 
+    color: white; 
+    border: none; 
+    padding: 0 20px; 
+    height: 54px; 
+    font-size: 17px; 
+    font-weight: 700; 
+    font-family: var(--font); 
+    cursor: pointer; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    gap: 8px; 
+    transition: transform 0.1s, background 0.3s; 
+    -webkit-tap-highlight-color: transparent; 
+    flex: 1; 
+  }
+  
+  .delete-btn:active { 
+    transform: scale(0.97); 
+  }
+  
+  .delete-btn:disabled { 
+    background: #CCCCCC; 
+    cursor: not-allowed; 
+  }
+
+  /* spacer so content doesn't hide behind fixed button */
+  .calc-spacer { height: 78px; flex-shrink: 0; }
+
+  .calc-btn.showing-total { background: #2D7A4F; }
 
   /* MODAL BASE */
   .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.4); z-index:100; display:flex; align-items:flex-end; backdrop-filter:blur(4px); -webkit-backdrop-filter:blur(4px); opacity:0; pointer-events:none; transition:opacity 0.25s; }
@@ -110,10 +172,14 @@
   .season-tab.active-summer { border-color:var(--summer); color:var(--summer); background:#FFF8EE; }
   .season-tab.active-winter { border-color:var(--winter); color:var(--winter); background:#EEF4FF; }
   .settings-items-list { display:flex; flex-direction:column; gap:8px; }
-  .settings-item-row { display:flex; gap:7px; align-items:center; }
+  .settings-item-row { display:flex; gap:7px; align-items:center; cursor:grab; }
+  .settings-item-row:active { cursor:grabbing; }
+  .settings-item-row.dragging { opacity: 0.5; }
   .settings-item-row input { background:var(--bg); border:1px solid var(--border); border-radius:10px; padding:10px 12px; font-size:15px; font-family:var(--font); color:var(--text-primary); -webkit-appearance:none; }
   .settings-item-row input:focus { outline:none; border-color:var(--accent); }
-  .input-name { flex:1; } .input-price { width:80px; }
+  .input-name { flex:1; } 
+  .input-display-name { flex:1; } 
+  .input-price { width:80px; }
   .del-item-btn { width:32px; height:32px; background:var(--danger-bg); color:var(--danger); border:none; border-radius:8px; font-size:16px; font-weight:700; cursor:pointer; flex-shrink:0; -webkit-tap-highlight-color:transparent; display:flex; align-items:center; justify-content:center; }
   .add-item-btn { margin-top:10px; width:100%; padding:12px; background:var(--bg); border:2px dashed var(--border); border-radius:12px; font-size:15px; font-weight:600; color:var(--text-secondary); font-family:var(--font); cursor:pointer; -webkit-tap-highlight-color:transparent; }
   .add-item-btn:active { opacity:0.7; }
@@ -154,12 +220,17 @@
     </div>
   </div>
 
-  <button class="calc-btn" id="calcBtn">
-    <span>&#129534;</span>
-    <span id="calcBtnText">Gesamtpreis berechnen</span>
-  </button>
-</div>
+  <div class="calc-btn-container">
+    <button class="calc-btn" id="calcBtn">
+      <span>&#129534;</span>
+      <span id="calcBtnText">Gesamtpreis berechnen</span>
+    </button>
+    <button class="delete-btn" id="deleteBtn" disabled>
+      <span>&#128465;</span>
+    </button>
+  </div>
   <div class="calc-spacer"></div>
+</div>
 
 <!-- DRINKS MODAL -->
 <div class="modal-overlay" id="drinksModal">
@@ -214,14 +285,14 @@
 <script>
 const defaultItems = {
   summer: [
-    {id:1,name:'1',price:1.50},{id:2,name:'2',price:2.00},{id:3,name:'3',price:3.50},{id:4,name:'4',price:4.00},
-    {id:5,name:'5',price:5.50},{id:6,name:'6',price:6.00},{id:7,name:'7',price:7.50},{id:8,name:'8',price:8.00},
-    {id:9,name:'9',price:9.99},{id:10,name:'10',price:10.00},{id:11,name:'11',price:12.50},{id:12,name:'12',price:15.00}
+    {id:1,name:'1',price:1.50, displayName: 'Burger'},{id:2,name:'2',price:2.00, displayName: 'Pommes'},{id:3,name:'3',price:3.50, displayName: 'Salat'},{id:4,name:'4',price:4.00, displayName: 'Pizza'},
+    {id:5,name:'5',price:5.50, displayName: 'Currywurst'},{id:6,name:'6',price:6.00, displayName: 'Pasta'},{id:7,name:'7',price:7.50, displayName: 'Sandwich'},{id:8,name:'8',price:8.00, displayName: 'Donut'},
+    {id:9,name:'9',price:9.99, displayName: 'Kaffee'},{id:10,name:'10',price:10.00, displayName: 'Bier'},{id:11,name:'11',price:12.50, displayName: 'Limo'},{id:12,name:'12',price:15.00, displayName: 'Eis'}
   ],
   winter: [
-    {id:1,name:'1',price:1.50},{id:2,name:'2',price:2.00},{id:3,name:'3',price:3.50},{id:4,name:'4',price:4.00},
-    {id:5,name:'5',price:5.50},{id:6,name:'6',price:6.00},{id:7,name:'7',price:7.50},{id:8,name:'8',price:8.00},
-    {id:9,name:'9',price:9.99},{id:10,name:'10',price:10.00},{id:11,name:'11',price:12.50},{id:12,name:'12',price:15.00}
+    {id:1,name:'1',price:1.50, displayName: 'Eintopf'},{id:2,name:'2',price:2.00, displayName: 'Suppe'},{id:3,name:'3',price:3.50, displayName: 'Ramen'},{id:4,name:'4',price:4.00, displayName: 'Kuchen'},
+    {id:5,name:'5',price:5.50, displayName: 'Heiße Schoki'},{id:6,name:'6',price:6.00, displayName: 'Glühwein'},{id:7,name:'7',price:7.50, displayName: 'Frühstück'},{id:8,name:'8',price:8.00, displayName: 'Kekse'},
+    {id:9,name:'9',price:9.99, displayName: 'Kaffee'},{id:10,name:'10',price:10.00, displayName: 'Tee'},{id:11,name:'11',price:12.50, displayName: 'Kakao'},{id:12,name:'12',price:15.00, displayName: 'Honigkuchen'}
   ]
 };
 
@@ -233,6 +304,7 @@ function saveState() { try{localStorage.setItem('bestellapp_v3',JSON.stringify(s
 let state = loadState();
 let settingsEditSeason = state.season;
 let settingsEditItems = null;
+let draggedItem = null;
 
 // DRINKS EXPR
 let drinksExpr = '';
@@ -317,7 +389,7 @@ function renderBestellung() {
   state.receipt.forEach((entry,idx)=>{
     const row=document.createElement('div');
     row.className='receipt-item';
-    row.innerHTML='<span class="receipt-item-name">'+escHtml(entry.name)+'</span><span class="receipt-item-price">€'+entry.price.toFixed(2)+'</span><button class="remove-btn">✕</button>';
+    row.innerHTML='<span class="receipt-item-name">'+escHtml(entry.displayName || entry.name)+'</span><span class="receipt-item-price">€'+entry.price.toFixed(2)+'</span><button class="remove-btn">✕</button>';
     row.querySelector('.remove-btn').addEventListener('click',()=>removeFromBestellung(idx));
     list.appendChild(row);
   });
@@ -328,9 +400,18 @@ function renderBestellung() {
 function renderCalcBtn() {
   const btn=document.getElementById('calcBtn');
   const txt=document.getElementById('calcBtnText');
+  const deleteBtn = document.getElementById('deleteBtn');
   const t=state.receipt.reduce((s,e)=>s+e.price,0);
-  if(state.receipt.length===0){ txt.textContent='Gesamtpreis berechnen'; btn.classList.remove('showing-total'); }
-  else { txt.textContent='Total: '+t.toFixed(2)+'€'; btn.classList.add('showing-total'); }
+  if(state.receipt.length===0){ 
+    txt.textContent='Gesamtpreis berechnen'; 
+    btn.classList.remove('showing-total');
+    deleteBtn.disabled = true;
+  }
+  else { 
+    txt.textContent='Total: '+t.toFixed(2)+'€'; 
+    btn.classList.add('showing-total');
+    deleteBtn.disabled = false;
+  }
 }
 
 // RENDER SEASON
@@ -344,15 +425,17 @@ function renderAll() { renderGrid(); renderBestellung(); renderCalcBtn(); render
 // ACTIONS
 function addToBestellung(item,btn) {
   btn.classList.remove('flash'); void btn.offsetWidth; btn.classList.add('flash');
-  state.receipt.push({name:item.name,price:item.price});
+  state.receipt.push({name:item.name, price:item.price, displayName: item.displayName});
   state.showingTotal=false; saveState(); renderBestellung(); renderCalcBtn();
 }
 function removeFromBestellung(idx) { state.receipt.splice(idx,1); state.showingTotal=false; saveState(); renderBestellung(); renderCalcBtn(); }
 function clearBestellung() { state.receipt=[]; state.drinksTotal=null; state.showingTotal=false; saveState(); renderBestellung(); renderCalcBtn(); renderDrinksDisplay(); }
 
 document.getElementById('seasonToggle').addEventListener('click',()=>{ state.season=state.season==='summer'?'winter':'summer'; saveState(); renderSeason(); renderGrid(); });
-document.getElementById('clearBtn').addEventListener('click',clearBestellung);
-document.getElementById('calcBtn').addEventListener('click',()=>{ /* total always shown, no toggle needed */ });
+document.getElementById('clearBtn').addEventListener('click', clearBestellung);
+
+// DELETE BTN ACTION
+document.getElementById('deleteBtn').addEventListener('click', clearBestellung);
 
 // SETTINGS
 function openSettingsModal() { settingsEditSeason=state.season; settingsEditItems=JSON.parse(JSON.stringify(state.items)); renderSettingsModal(); document.getElementById('settingsModal').classList.add('active'); }
@@ -367,11 +450,41 @@ function renderSettingsModal() {
   document.getElementById('tabWinter').className='season-tab'+(settingsEditSeason==='winter'?' active-winter':'');
   const list=document.getElementById('settingsItemsList');
   list.innerHTML='';
-  settingsEditItems[settingsEditSeason].forEach((item,idx)=>{
+  settingsEditItems[settingsEditSeason].forEach((item,idx)=>{ 
     const row=document.createElement('div');
     row.className='settings-item-row';
-    row.innerHTML='<input class="input-name" type="text" value="'+escAttr(item.name)+'" placeholder="Name / Emoji" data-idx="'+idx+'" data-field="name"><input class="input-price" type="number" value="'+item.price.toFixed(2)+'" placeholder="Preis" step="0.01" min="0" data-idx="'+idx+'" data-field="price"><button class="del-item-btn" data-idx="'+idx+'">✕</button>';
+    row.draggable = true;
+    row.dataset.idx = idx;
+    row.innerHTML='<input class="input-name" type="text" value="'+escAttr(item.name)+'" placeholder="Name / Emoji" data-idx="'+idx+'" data-field="name"><input class="input-display-name" type="text" value="'+escAttr(item.displayName || '')+'" placeholder="Anzeigename (optional)" data-idx="'+idx+'" data-field="displayName"><input class="input-price" type="number" value="'+item.price.toFixed(2)+'" placeholder="Preis" step="0.01" min="0" data-idx="'+idx+'" data-field="price"><button class="del-item-btn" data-idx="'+idx+'">✕</button>';
     row.querySelector('.del-item-btn').addEventListener('click',()=>{ collectSettingsEdits(); settingsEditItems[settingsEditSeason].splice(idx,1); renderSettingsModal(); });
+    
+    // Drag and drop functionality
+    row.addEventListener('dragstart', (e) => {
+      draggedItem = idx;
+      e.dataTransfer.effectAllowed = 'move';
+      row.classList.add('dragging');
+    });
+    
+    row.addEventListener('dragend', () => {
+      row.classList.remove('dragging');
+    });
+    
+    row.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+    });
+    
+    row.addEventListener('drop', (e) => {
+      e.preventDefault();
+      const targetIdx = parseInt(row.dataset.idx);
+      if (draggedItem !== null && draggedItem !== targetIdx) {
+        const items = settingsEditItems[settingsEditSeason];
+        const [movedItem] = items.splice(draggedItem, 1);
+        items.splice(targetIdx, 0, movedItem);
+        renderSettingsModal();
+      }
+    });
+    
     list.appendChild(row);
   });
 }
@@ -379,15 +492,20 @@ function renderSettingsModal() {
 function collectSettingsEdits() {
   document.querySelectorAll('.settings-item-row').forEach(row=>{
     const ni=row.querySelector('[data-field="name"]');
+    const dni=row.querySelector('[data-field="displayName"]');
     const pi=row.querySelector('[data-field="price"]');
     if(!ni)return;
     const idx=parseInt(ni.dataset.idx);
     const items=settingsEditItems[settingsEditSeason];
-    if(items[idx]){ items[idx].name=ni.value||String(idx+1); items[idx].price=parseFloat(pi.value)||0; }
+    if(items[idx]){ 
+      items[idx].name=ni.value||String(idx+1); 
+      items[idx].displayName=dni.value||''; 
+      items[idx].price=parseFloat(pi.value)||0; 
+    }
   });
 }
 
-document.getElementById('addItemBtn').addEventListener('click',()=>{ collectSettingsEdits(); const items=settingsEditItems[settingsEditSeason]; items.push({id:Date.now(),name:String(items.length+1),price:0.00}); renderSettingsModal(); setTimeout(()=>{document.querySelector('.settings-scroll').scrollTop=99999;},50); });
+document.getElementById('addItemBtn').addEventListener('click',()=>{ collectSettingsEdits(); const items=settingsEditItems[settingsEditSeason]; items.push({id:Date.now(),name:String(items.length+1),price:0.00, displayName: ''}); renderSettingsModal(); setTimeout(()=>{document.querySelector('.settings-scroll').scrollTop=99999;},50); });
 document.getElementById('saveSettingsBtn').addEventListener('click',()=>{ collectSettingsEdits(); state.items=settingsEditItems; saveState(); renderGrid(); closeSettingsModal(); });
 
 function escHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
@@ -395,7 +513,6 @@ function escAttr(s){ return String(s).replace(/"/g,'&quot;').replace(/'/g,'&#39;
 
 renderAll();
 </script>
-
 
 <script>
 // Cache app on first load for offline use
