@@ -65,7 +65,8 @@
   .receipt-item { display:flex; align-items:center; padding:3px 0; border-bottom:1px solid var(--border); animation:slideIn 0.18s ease-out; }
   .receipt-item:last-child { border-bottom:none; }
   @keyframes slideIn { from{opacity:0;transform:translateX(-6px)} to{opacity:1;transform:translateX(0)} }
-  .receipt-item-name { font-size:12px; font-weight:500; color:var(--text-primary); flex:1; }
+  .receipt-item-name { font-size:12px; font-weight:500; color:var(--text-primary); text-align: left; min-width: 40px; }
+  .receipt-item-display-name { font-size:12px; font-weight:500; color:var(--text-secondary); flex:1; text-align: center; }
   .receipt-item-price { font-size:12px; font-weight:600; font-family:var(--mono); color:var(--text-primary); margin-right:8px; }
   .remove-btn { width:20px; height:20px; border-radius:50%; background:var(--danger-bg); border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:11px; color:var(--danger); flex-shrink:0; font-weight:700; -webkit-tap-highlight-color:transparent; transition:transform 0.1s; }
   .remove-btn:active { transform:scale(0.9); }
@@ -172,19 +173,85 @@
   .season-tab.active-summer { border-color:var(--summer); color:var(--summer); background:#FFF8EE; }
   .season-tab.active-winter { border-color:var(--winter); color:var(--winter); background:#EEF4FF; }
   .settings-items-list { display:flex; flex-direction:column; gap:8px; }
-  .settings-item-row { display:flex; gap:7px; align-items:center; cursor:grab; }
-  .settings-item-row:active { cursor:grabbing; }
+  .settings-item-row { 
+    display: flex; 
+    gap: 7px; 
+    align-items: center; 
+    cursor: grab; 
+    width: 100%; 
+    overflow: hidden; 
+    user-select: none; 
+  }
+  .settings-item-row:active { cursor: grabbing; }
   .settings-item-row.dragging { opacity: 0.5; }
-  .settings-item-row input { background:var(--bg); border:1px solid var(--border); border-radius:10px; padding:10px 12px; font-size:15px; font-family:var(--font); color:var(--text-primary); -webkit-appearance:none; }
-  .settings-item-row input:focus { outline:none; border-color:var(--accent); }
-  .input-name { flex:1; } 
-  .input-display-name { flex:1; } 
-  .input-price { width:80px; }
-  .del-item-btn { width:32px; height:32px; background:var(--danger-bg); color:var(--danger); border:none; border-radius:8px; font-size:16px; font-weight:700; cursor:pointer; flex-shrink:0; -webkit-tap-highlight-color:transparent; display:flex; align-items:center; justify-content:center; }
-  .add-item-btn { margin-top:10px; width:100%; padding:12px; background:var(--bg); border:2px dashed var(--border); border-radius:12px; font-size:15px; font-weight:600; color:var(--text-secondary); font-family:var(--font); cursor:pointer; -webkit-tap-highlight-color:transparent; }
-  .add-item-btn:active { opacity:0.7; }
-  .save-settings-btn { margin:10px 18px 20px; width:calc(100% - 36px); padding:15px; background:var(--accent); color:white; border:none; border-radius:14px; font-size:16px; font-weight:700; font-family:var(--font); cursor:pointer; -webkit-tap-highlight-color:transparent; flex-shrink:0; transition:transform 0.1s; }
-  .save-settings-btn:active { transform:scale(0.98); }
+  .settings-item-row .drag-handle { 
+    cursor: grab; 
+    color: var(--text-secondary); 
+    font-size: 16px; 
+    padding: 0 8px; 
+  }
+  .settings-item-row input { 
+    background: var(--bg); 
+    border: 1px solid var(--border); 
+    border-radius: 10px; 
+    padding: 10px 12px; 
+    font-size: 15px; 
+    font-family: var(--font); 
+    color: var(--text-primary); 
+    -webkit-appearance: none; 
+  }
+  .settings-item-row input:focus { outline: none; border-color: var(--accent); }
+  .input-name { width: 60px; flex-shrink: 0; } 
+  .input-display-name { flex: 1; min-width: 0; } 
+  .input-price { width: 80px; flex-shrink: 0; }
+  .del-item-btn { 
+    width: 32px; 
+    height: 32px; 
+    background: var(--danger-bg); 
+    color: var(--danger); 
+    border: none; 
+    border-radius: 8px; 
+    font-size: 16px; 
+    font-weight: 700; 
+    cursor: pointer; 
+    flex-shrink: 0; 
+    -webkit-tap-highlight-color: transparent; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+  }
+  .add-item-btn { 
+    margin-top: 10px; 
+    width: 100%; 
+    padding: 12px; 
+    background: var(--bg); 
+    border: 2px dashed var(--border); 
+    border-radius: 12px; 
+    font-size: 15px; 
+    font-weight: 600; 
+    color: var(--text-secondary); 
+    font-family: var(--font); 
+    cursor: pointer; 
+    -webkit-tap-highlight-color: transparent; 
+  }
+  .add-item-btn:active { opacity: 0.7; }
+  .save-settings-btn { 
+    margin: 10px 18px 20px; 
+    width: calc(100% - 36px); 
+    padding: 15px; 
+    background: var(--accent); 
+    color: white; 
+    border: none; 
+    border-radius: 14px; 
+    font-size: 16px; 
+    font-weight: 700; 
+    font-family: var(--font); 
+    cursor: pointer; 
+    -webkit-tap-highlight-color: transparent; 
+    flex-shrink: 0; 
+    transition: transform 0.1s; 
+  }
+  .save-settings-btn:active { transform: scale(0.98); }
 </style>
 </head>
 <body>
@@ -389,7 +456,7 @@ function renderBestellung() {
   state.receipt.forEach((entry,idx)=>{
     const row=document.createElement('div');
     row.className='receipt-item';
-    row.innerHTML='<span class="receipt-item-name">'+escHtml(entry.displayName || entry.name)+'</span><span class="receipt-item-price">€'+entry.price.toFixed(2)+'</span><button class="remove-btn">✕</button>';
+    row.innerHTML='<span class="receipt-item-name">'+escHtml(entry.name)+'</span>' + (entry.displayName ? '<span class="receipt-item-display-name">' + escHtml(entry.displayName) + '</span>' : '') + '<span class="receipt-item-price">€'+entry.price.toFixed(2)+'</span><button class="remove-btn">✕</button>';
     row.querySelector('.remove-btn').addEventListener('click',()=>removeFromBestellung(idx));
     list.appendChild(row);
   });
@@ -455,7 +522,7 @@ function renderSettingsModal() {
     row.className='settings-item-row';
     row.draggable = true;
     row.dataset.idx = idx;
-    row.innerHTML='<input class="input-name" type="text" value="'+escAttr(item.name)+'" placeholder="Name / Emoji" data-idx="'+idx+'" data-field="name"><input class="input-display-name" type="text" value="'+escAttr(item.displayName || '')+'" placeholder="Anzeigename (optional)" data-idx="'+idx+'" data-field="displayName"><input class="input-price" type="number" value="'+item.price.toFixed(2)+'" placeholder="Preis" step="0.01" min="0" data-idx="'+idx+'" data-field="price"><button class="del-item-btn" data-idx="'+idx+'">✕</button>';
+    row.innerHTML='<span class="drag-handle">&#9776;</span><input class="input-name" type="text" value="'+escAttr(item.name)+'" placeholder="Nummer" data-idx="'+idx+'" data-field="name"><input class="input-display-name" type="text" value="'+escAttr(item.displayName || '')+'" placeholder="Gericht" data-idx="'+idx+'" data-field="displayName"><input class="input-price" type="number" value="'+item.price.toFixed(2)+'" placeholder="Preis" step="0.01" min="0" data-idx="'+idx+'" data-field="price"><button class="del-item-btn" data-idx="'+idx+'">✕</button>';
     row.querySelector('.del-item-btn').addEventListener('click',()=>{ collectSettingsEdits(); settingsEditItems[settingsEditSeason].splice(idx,1); renderSettingsModal(); });
     
     // Drag and drop functionality
@@ -506,6 +573,7 @@ function collectSettingsEdits() {
 }
 
 document.getElementById('addItemBtn').addEventListener('click',()=>{ collectSettingsEdits(); const items=settingsEditItems[settingsEditSeason]; items.push({id:Date.now(),name:String(items.length+1),price:0.00, displayName: ''}); renderSettingsModal(); setTimeout(()=>{document.querySelector('.settings-scroll').scrollTop=99999;},50); });
+
 document.getElementById('saveSettingsBtn').addEventListener('click',()=>{ collectSettingsEdits(); state.items=settingsEditItems; saveState(); renderGrid(); closeSettingsModal(); });
 
 function escHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
