@@ -65,83 +65,19 @@
   .receipt-item { display:flex; align-items:center; padding:3px 0; border-bottom:1px solid var(--border); animation:slideIn 0.18s ease-out; }
   .receipt-item:last-child { border-bottom:none; }
   @keyframes slideIn { from{opacity:0;transform:translateX(-6px)} to{opacity:1;transform:translateX(0)} }
-  .receipt-item-name { font-size:12px; font-weight:500; color:var(--text-primary); text-align: left; min-width: 40px; }
-  .receipt-item-display-name { font-size:12px; font-weight:500; color:var(--text-secondary); flex:1; text-align: center; }
+  .receipt-item-name { font-size:12px; font-weight:500; color:var(--text-primary); flex:1; }
   .receipt-item-price { font-size:12px; font-weight:600; font-family:var(--mono); color:var(--text-primary); margin-right:8px; }
   .remove-btn { width:20px; height:20px; border-radius:50%; background:var(--danger-bg); border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:11px; color:var(--danger); flex-shrink:0; font-weight:700; -webkit-tap-highlight-color:transparent; transition:transform 0.1s; }
   .remove-btn:active { transform:scale(0.9); }
 
-  /* CALC BTN */
-  .calc-btn-container { 
-    position: fixed; 
-    bottom: 16px; 
-    left: 50%; 
-    transform: translateX(-50%); 
-    width: calc(100% - 32px); 
-    max-width: 448px; 
-    z-index: 50; 
-    display: flex; 
-    gap: 0; 
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25); 
-    border-radius: 16px; 
-    overflow: hidden; 
-  }
-  
-  .calc-btn { 
-    background: var(--accent); 
-    color: var(--accent-text); 
-    border: none; 
-    padding: 0 20px; 
-    height: 54px; 
-    font-size: 17px; 
-    font-weight: 700; 
-    font-family: var(--font); 
-    cursor: pointer; 
-    display: flex; 
-    align-items: center; 
-    justify-content: center; 
-    gap: 8px; 
-    transition: transform 0.1s, background 0.3s; 
-    -webkit-tap-highlight-color: transparent; 
-    flex: 2; 
-  }
-  
-  .calc-btn:active { 
-    transform: scale(0.97); 
-  }
-  
-  .delete-btn { 
-    background: var(--danger); 
-    color: white; 
-    border: none; 
-    padding: 0 20px; 
-    height: 54px; 
-    font-size: 17px; 
-    font-weight: 700; 
-    font-family: var(--font); 
-    cursor: pointer; 
-    display: flex; 
-    align-items: center; 
-    justify-content: center; 
-    gap: 8px; 
-    transition: transform 0.1s, background 0.3s; 
-    -webkit-tap-highlight-color: transparent; 
-    flex: 1; 
-  }
-  
-  .delete-btn:active { 
-    transform: scale(0.97); 
-  }
-  
-  .delete-btn:disabled { 
-    background: #CCCCCC; 
-    cursor: not-allowed; 
-  }
-
-  /* spacer so content doesn't hide behind fixed button */
-  .calc-spacer { height: 78px; flex-shrink: 0; }
-
-  .calc-btn.showing-total { background: #2D7A4F; }
+  /* CALC BAR */
+  .calc-bar{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);width:calc(100% - 32px);max-width:448px;z-index:50;display:flex;border-radius:16px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.25)}
+  .calc-btn{flex:2;background:var(--accent);color:var(--accent-text);border:none;height:54px;font-size:17px;font-weight:700;font-family:var(--font);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:background .3s;-webkit-tap-highlight-color:transparent}
+  .calc-btn.showing-total{background:#2D7A4F}
+  .delete-btn{flex:1;background:var(--danger);color:#fff;border:none;height:54px;font-size:20px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+  .delete-btn:disabled{background:#CCC}
+  .calc-btn:active,.delete-btn:active{opacity:.85}
+  .calc-spacer{height:78px;flex-shrink:0}
 
   /* MODAL BASE */
   .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.4); z-index:100; display:flex; align-items:flex-end; backdrop-filter:blur(4px); -webkit-backdrop-filter:blur(4px); opacity:0; pointer-events:none; transition:opacity 0.25s; }
@@ -173,85 +109,33 @@
   .season-tab.active-summer { border-color:var(--summer); color:var(--summer); background:#FFF8EE; }
   .season-tab.active-winter { border-color:var(--winter); color:var(--winter); background:#EEF4FF; }
   .settings-items-list { display:flex; flex-direction:column; gap:8px; }
-  .settings-item-row { 
-    display: flex; 
-    gap: 7px; 
-    align-items: center; 
-    cursor: grab; 
-    width: 100%; 
-    overflow: hidden; 
-    user-select: none; 
-  }
-  .settings-item-row:active { cursor: grabbing; }
-  .settings-item-row.dragging { opacity: 0.5; }
-  .settings-item-row .drag-handle { 
-    cursor: grab; 
-    color: var(--text-secondary); 
-    font-size: 16px; 
-    padding: 0 8px; 
-  }
-  .settings-item-row input { 
-    background: var(--bg); 
-    border: 1px solid var(--border); 
-    border-radius: 10px; 
-    padding: 10px 12px; 
-    font-size: 15px; 
-    font-family: var(--font); 
-    color: var(--text-primary); 
-    -webkit-appearance: none; 
-  }
-  .settings-item-row input:focus { outline: none; border-color: var(--accent); }
-  .input-name { width: 60px; flex-shrink: 0; } 
-  .input-display-name { flex: 1; min-width: 0; } 
-  .input-price { width: 80px; flex-shrink: 0; }
-  .del-item-btn { 
-    width: 32px; 
-    height: 32px; 
-    background: var(--danger-bg); 
-    color: var(--danger); 
-    border: none; 
-    border-radius: 8px; 
-    font-size: 16px; 
-    font-weight: 700; 
-    cursor: pointer; 
-    flex-shrink: 0; 
-    -webkit-tap-highlight-color: transparent; 
-    display: flex; 
-    align-items: center; 
-    justify-content: center; 
-  }
-  .add-item-btn { 
-    margin-top: 10px; 
-    width: 100%; 
-    padding: 12px; 
-    background: var(--bg); 
-    border: 2px dashed var(--border); 
-    border-radius: 12px; 
-    font-size: 15px; 
-    font-weight: 600; 
-    color: var(--text-secondary); 
-    font-family: var(--font); 
-    cursor: pointer; 
-    -webkit-tap-highlight-color: transparent; 
-  }
-  .add-item-btn:active { opacity: 0.7; }
-  .save-settings-btn { 
-    margin: 10px 18px 20px; 
-    width: calc(100% - 36px); 
-    padding: 15px; 
-    background: var(--accent); 
-    color: white; 
-    border: none; 
-    border-radius: 14px; 
-    font-size: 16px; 
-    font-weight: 700; 
-    font-family: var(--font); 
-    cursor: pointer; 
-    -webkit-tap-highlight-color: transparent; 
-    flex-shrink: 0; 
-    transition: transform 0.1s; 
-  }
-  .save-settings-btn:active { transform: scale(0.98); }
+  .settings-item-row { display:flex; gap:7px; align-items:center; }
+  .settings-item-row input { background:var(--bg); border:1px solid var(--border); border-radius:10px; padding:10px 12px; font-size:15px; font-family:var(--font); color:var(--text-primary); -webkit-appearance:none; }
+  .settings-item-row input:focus { outline:none; border-color:var(--accent); }
+  .input-name { flex:1; } .input-price { width:80px; }
+  .del-item-btn { width:32px; height:32px; background:var(--danger-bg); color:var(--danger); border:none; border-radius:8px; font-size:16px; font-weight:700; cursor:pointer; flex-shrink:0; -webkit-tap-highlight-color:transparent; display:flex; align-items:center; justify-content:center; }
+  .add-item-btn { margin-top:10px; width:100%; padding:12px; background:var(--bg); border:2px dashed var(--border); border-radius:12px; font-size:15px; font-weight:600; color:var(--text-secondary); font-family:var(--font); cursor:pointer; -webkit-tap-highlight-color:transparent; }
+  .add-item-btn:active { opacity:0.7; }
+  .save-settings-btn { margin:10px 18px 20px; width:calc(100% - 36px); padding:15px; background:var(--accent); color:white; border:none; border-radius:14px; font-size:16px; font-weight:700; font-family:var(--font); cursor:pointer; -webkit-tap-highlight-color:transparent; flex-shrink:0; transition:transform 0.1s; }
+  .save-settings-btn:active { transform:scale(0.98); }
+
+  /* SETTINGS ROWS (einzeilig, mit Ziehgriff) */
+  .settings-items-list{gap:6px}
+  .settings-item-row{flex-direction:row;align-items:center;gap:6px;background:#FAF8F5;border-radius:12px;padding:6px;position:relative;transition:transform .18s ease}
+  .settings-item-row.dragging{transition:none;z-index:5;background:#fff;box-shadow:0 8px 24px rgba(0,0,0,.28)}
+  .settings-item-row input{padding:9px 8px;font-size:15px;min-width:0}
+  .input-name{flex:0 0 64px;width:64px;text-align:center;font-weight:700}
+  .input-display-name{flex:1;width:auto}
+  .input-price{flex:0 0 68px;width:68px}
+  .drag-h{flex:0 0 30px;height:40px;display:flex;align-items:center;justify-content:center;color:var(--text-secondary);font-size:20px;touch-action:none;cursor:grab;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+  /* SCAN */
+  .add-item-btn.scan-btn{margin:0 0 10px;background:#EEF4FF;border:2px solid var(--winter);color:#2F6DB5}
+  .scan-photo-btn{width:100%;padding:14px;background:var(--accent);color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:700;font-family:var(--font);cursor:pointer;margin-bottom:8px}
+  .scan-status{font-size:13px;color:var(--text-secondary);margin:4px 0 8px;min-height:18px}
+  #scanText{width:100%;height:150px;border:1px solid var(--border);border-radius:12px;background:var(--bg);padding:10px 12px;font-size:15px;font-family:var(--font);color:var(--text-primary);resize:none}
+  .scan-tip{font-size:12px;color:var(--text-secondary);margin:8px 0}
+  .scan-modes{display:flex;gap:16px;margin-bottom:12px;font-size:14px}
+  .product-num{max-width:100%;text-align:center;overflow-wrap:anywhere;line-height:1.1}
 </style>
 </head>
 <body>
@@ -287,14 +171,12 @@
     </div>
   </div>
 
-  <div class="calc-btn-container">
+  <div class="calc-bar">
     <button class="calc-btn" id="calcBtn">
       <span>&#129534;</span>
       <span id="calcBtnText">Gesamtpreis berechnen</span>
     </button>
-    <button class="delete-btn" id="deleteBtn" disabled>
-      <span>&#128465;</span>
-    </button>
+    <button class="delete-btn" id="deleteBtn" disabled>&#128465;</button>
   </div>
   <div class="calc-spacer"></div>
 </div>
@@ -342,6 +224,7 @@
       </div>
     </div>
     <div class="settings-scroll">
+      <button class="add-item-btn scan-btn" id="scanOpenBtn">&#128247; Preisliste einscannen</button>
       <div class="settings-items-list" id="settingsItemsList"></div>
       <button class="add-item-btn" id="addItemBtn">&#65291; Artikel hinzufügen</button>
     </div>
@@ -349,17 +232,36 @@
   </div>
 </div>
 
+<!-- SCAN MODAL -->
+<div class="modal-overlay" id="scanModal" style="z-index:110">
+  <div class="modal-sheet" style="max-height:92dvh;overflow-y:auto">
+    <div class="modal-handle"></div>
+    <div class="modal-title">&#128247; Preisliste einscannen</div>
+    <div class="scan-status" style="margin-top:-8px">Wird eingefügt in: <b id="scanSeason"></b></div>
+    <button class="scan-photo-btn" id="scanPhotoBtn">Foto aufnehmen / auswählen</button>
+    <input type="file" accept="image/*" id="scanFile" hidden>
+    <div class="scan-status" id="scanStatus">Pro Zeile ein Gericht mit Preis, z.B. „12 Eis 3,50“.</div>
+    <textarea id="scanText" placeholder="Erkannter Text erscheint hier. Du kannst ihn korrigieren oder selbst einfügen."></textarea>
+    <div class="scan-tip">Tipp: Ins Feld tippen und „Text scannen“ (Kamera-Symbol) wählen, dann liest das iPhone den Text selbst, auch ohne Internet.</div>
+    <div class="scan-modes">
+      <label><input type="radio" name="scanMode" value="replace" checked> Liste ersetzen</label>
+      <label><input type="radio" name="scanMode" value="append"> Anhängen</label>
+    </div>
+    <button class="save-settings-btn" id="scanApply" style="margin:0;width:100%">Übernehmen</button>
+  </div>
+</div>
+
 <script>
 const defaultItems = {
   summer: [
-    {id:1,name:'1',price:1.50, displayName: 'Burger'},{id:2,name:'2',price:2.00, displayName: 'Pommes'},{id:3,name:'3',price:3.50, displayName: 'Salat'},{id:4,name:'4',price:4.00, displayName: 'Pizza'},
-    {id:5,name:'5',price:5.50, displayName: 'Currywurst'},{id:6,name:'6',price:6.00, displayName: 'Pasta'},{id:7,name:'7',price:7.50, displayName: 'Sandwich'},{id:8,name:'8',price:8.00, displayName: 'Donut'},
-    {id:9,name:'9',price:9.99, displayName: 'Kaffee'},{id:10,name:'10',price:10.00, displayName: 'Bier'},{id:11,name:'11',price:12.50, displayName: 'Limo'},{id:12,name:'12',price:15.00, displayName: 'Eis'}
+    {id:1,name:'1',price:1.50},{id:2,name:'2',price:2.00},{id:3,name:'3',price:3.50},{id:4,name:'4',price:4.00},
+    {id:5,name:'5',price:5.50},{id:6,name:'6',price:6.00},{id:7,name:'7',price:7.50},{id:8,name:'8',price:8.00},
+    {id:9,name:'9',price:9.99},{id:10,name:'10',price:10.00},{id:11,name:'11',price:12.50},{id:12,name:'12',price:15.00}
   ],
   winter: [
-    {id:1,name:'1',price:1.50, displayName: 'Eintopf'},{id:2,name:'2',price:2.00, displayName: 'Suppe'},{id:3,name:'3',price:3.50, displayName: 'Ramen'},{id:4,name:'4',price:4.00, displayName: 'Kuchen'},
-    {id:5,name:'5',price:5.50, displayName: 'Heiße Schoki'},{id:6,name:'6',price:6.00, displayName: 'Glühwein'},{id:7,name:'7',price:7.50, displayName: 'Frühstück'},{id:8,name:'8',price:8.00, displayName: 'Kekse'},
-    {id:9,name:'9',price:9.99, displayName: 'Kaffee'},{id:10,name:'10',price:10.00, displayName: 'Tee'},{id:11,name:'11',price:12.50, displayName: 'Kakao'},{id:12,name:'12',price:15.00, displayName: 'Honigkuchen'}
+    {id:1,name:'1',price:1.50},{id:2,name:'2',price:2.00},{id:3,name:'3',price:3.50},{id:4,name:'4',price:4.00},
+    {id:5,name:'5',price:5.50},{id:6,name:'6',price:6.00},{id:7,name:'7',price:7.50},{id:8,name:'8',price:8.00},
+    {id:9,name:'9',price:9.99},{id:10,name:'10',price:10.00},{id:11,name:'11',price:12.50},{id:12,name:'12',price:15.00}
   ]
 };
 
@@ -371,7 +273,6 @@ function saveState() { try{localStorage.setItem('bestellapp_v3',JSON.stringify(s
 let state = loadState();
 let settingsEditSeason = state.season;
 let settingsEditItems = null;
-let draggedItem = null;
 
 // DRINKS EXPR
 let drinksExpr = '';
@@ -442,6 +343,7 @@ function renderGrid() {
     const btn=document.createElement('button');
     btn.className='product-btn';
     btn.innerHTML='<div class="product-num">'+escHtml(item.name)+'</div><div class="product-price">€'+item.price.toFixed(2)+'</div>';
+    const L=[...String(item.name)].length; if(L>4) btn.querySelector('.product-num').style.fontSize=(L>8?'13px':'17px');
     btn.addEventListener('click',()=>addToBestellung(item,btn));
     grid.appendChild(btn);
   });
@@ -456,7 +358,7 @@ function renderBestellung() {
   state.receipt.forEach((entry,idx)=>{
     const row=document.createElement('div');
     row.className='receipt-item';
-    row.innerHTML='<span class="receipt-item-name">'+escHtml(entry.name)+'</span>' + (entry.displayName ? '<span class="receipt-item-display-name">' + escHtml(entry.displayName) + '</span>' : '') + '<span class="receipt-item-price">€'+entry.price.toFixed(2)+'</span><button class="remove-btn">✕</button>';
+    row.innerHTML='<span class="receipt-item-name">'+escHtml(entry.displayName||entry.name)+'</span><span class="receipt-item-price">€'+entry.price.toFixed(2)+'</span><button class="remove-btn">✕</button>';
     row.querySelector('.remove-btn').addEventListener('click',()=>removeFromBestellung(idx));
     list.appendChild(row);
   });
@@ -467,18 +369,10 @@ function renderBestellung() {
 function renderCalcBtn() {
   const btn=document.getElementById('calcBtn');
   const txt=document.getElementById('calcBtnText');
-  const deleteBtn = document.getElementById('deleteBtn');
+  const del=document.getElementById('deleteBtn');
   const t=state.receipt.reduce((s,e)=>s+e.price,0);
-  if(state.receipt.length===0){ 
-    txt.textContent='Gesamtpreis berechnen'; 
-    btn.classList.remove('showing-total');
-    deleteBtn.disabled = true;
-  }
-  else { 
-    txt.textContent='Total: '+t.toFixed(2)+'€'; 
-    btn.classList.add('showing-total');
-    deleteBtn.disabled = false;
-  }
+  if(state.receipt.length===0){ txt.textContent='Gesamtpreis berechnen'; btn.classList.remove('showing-total'); del.disabled=true; }
+  else { txt.textContent='Total: '+t.toFixed(2)+'€'; btn.classList.add('showing-total'); del.disabled=false; }
 }
 
 // RENDER SEASON
@@ -492,17 +386,15 @@ function renderAll() { renderGrid(); renderBestellung(); renderCalcBtn(); render
 // ACTIONS
 function addToBestellung(item,btn) {
   btn.classList.remove('flash'); void btn.offsetWidth; btn.classList.add('flash');
-  state.receipt.push({name:item.name, price:item.price, displayName: item.displayName});
+  state.receipt.push({name:item.name,price:item.price,displayName:item.displayName||''});
   state.showingTotal=false; saveState(); renderBestellung(); renderCalcBtn();
 }
 function removeFromBestellung(idx) { state.receipt.splice(idx,1); state.showingTotal=false; saveState(); renderBestellung(); renderCalcBtn(); }
 function clearBestellung() { state.receipt=[]; state.drinksTotal=null; state.showingTotal=false; saveState(); renderBestellung(); renderCalcBtn(); renderDrinksDisplay(); }
 
 document.getElementById('seasonToggle').addEventListener('click',()=>{ state.season=state.season==='summer'?'winter':'summer'; saveState(); renderSeason(); renderGrid(); });
-document.getElementById('clearBtn').addEventListener('click', clearBestellung);
-
-// DELETE BTN ACTION
-document.getElementById('deleteBtn').addEventListener('click', clearBestellung);
+document.getElementById('clearBtn').addEventListener('click',clearBestellung);
+document.getElementById('deleteBtn').addEventListener('click',clearBestellung);
 
 // SETTINGS
 function openSettingsModal() { settingsEditSeason=state.season; settingsEditItems=JSON.parse(JSON.stringify(state.items)); renderSettingsModal(); document.getElementById('settingsModal').classList.add('active'); }
@@ -517,70 +409,181 @@ function renderSettingsModal() {
   document.getElementById('tabWinter').className='season-tab'+(settingsEditSeason==='winter'?' active-winter':'');
   const list=document.getElementById('settingsItemsList');
   list.innerHTML='';
-  settingsEditItems[settingsEditSeason].forEach((item,idx)=>{ 
+  settingsEditItems[settingsEditSeason].forEach((item,idx)=>{
     const row=document.createElement('div');
     row.className='settings-item-row';
-    row.draggable = true;
-    row.dataset.idx = idx;
-    row.innerHTML='<span class="drag-handle">&#9776;</span><input class="input-name" type="text" value="'+escAttr(item.name)+'" placeholder="Nummer" data-idx="'+idx+'" data-field="name"><input class="input-display-name" type="text" value="'+escAttr(item.displayName || '')+'" placeholder="Gericht" data-idx="'+idx+'" data-field="displayName"><input class="input-price" type="number" value="'+item.price.toFixed(2)+'" placeholder="Preis" step="0.01" min="0" data-idx="'+idx+'" data-field="price"><button class="del-item-btn" data-idx="'+idx+'">✕</button>';
+    row.innerHTML='<div class="drag-h" title="Zum Sortieren ziehen">☰</div>'
+      +'<input class="input-name" type="text" value="'+escAttr(item.name)+'" placeholder="Nr." data-field="name" data-idx="'+idx+'">'
+      +'<input class="input-display-name" type="text" value="'+escAttr(item.displayName||'')+'" placeholder="Bestellname" data-field="displayName">'
+      +'<input class="input-price" type="number" inputmode="decimal" value="'+item.price.toFixed(2)+'" placeholder="Preis" step="0.01" min="0" data-field="price">'
+      +'<button class="del-item-btn">✕</button>';
     row.querySelector('.del-item-btn').addEventListener('click',()=>{ collectSettingsEdits(); settingsEditItems[settingsEditSeason].splice(idx,1); renderSettingsModal(); });
-    
-    // Drag and drop functionality
-    row.addEventListener('dragstart', (e) => {
-      draggedItem = idx;
-      e.dataTransfer.effectAllowed = 'move';
-      row.classList.add('dragging');
-    });
-    
-    row.addEventListener('dragend', () => {
-      row.classList.remove('dragging');
-    });
-    
-    row.addEventListener('dragover', (e) => {
-      e.preventDefault();
-      e.dataTransfer.dropEffect = 'move';
-    });
-    
-    row.addEventListener('drop', (e) => {
-      e.preventDefault();
-      const targetIdx = parseInt(row.dataset.idx);
-      if (draggedItem !== null && draggedItem !== targetIdx) {
-        const items = settingsEditItems[settingsEditSeason];
-        const [movedItem] = items.splice(draggedItem, 1);
-        items.splice(targetIdx, 0, movedItem);
-        renderSettingsModal();
-      }
-    });
-    
+    initDrag(row.querySelector('.drag-h'),row,idx);
     list.appendChild(row);
   });
 }
 
 function collectSettingsEdits() {
+  const items=settingsEditItems[settingsEditSeason];
   document.querySelectorAll('.settings-item-row').forEach(row=>{
-    const ni=row.querySelector('[data-field="name"]');
-    const dni=row.querySelector('[data-field="displayName"]');
-    const pi=row.querySelector('[data-field="price"]');
-    if(!ni)return;
-    const idx=parseInt(ni.dataset.idx);
-    const items=settingsEditItems[settingsEditSeason];
-    if(items[idx]){ 
-      items[idx].name=ni.value||String(idx+1); 
-      items[idx].displayName=dni.value||''; 
-      items[idx].price=parseFloat(pi.value)||0; 
-    }
+    const g=f=>row.querySelector('[data-field="'+f+'"]');
+    const idx=parseInt(g('name').dataset.idx);
+    if(!items[idx]) return;
+    items[idx].name=g('name').value||String(idx+1);
+    items[idx].displayName=g('displayName').value;
+    items[idx].price=parseFloat(g('price').value)||0;
   });
 }
 
-document.getElementById('addItemBtn').addEventListener('click',()=>{ collectSettingsEdits(); const items=settingsEditItems[settingsEditSeason]; items.push({id:Date.now(),name:String(items.length+1),price:0.00, displayName: ''}); renderSettingsModal(); setTimeout(()=>{document.querySelector('.settings-scroll').scrollTop=99999;},50); });
+// Haptik: Android per vibrate(), iPhone (Safari ab iOS 17.4) über einen unsichtbaren Schalter
+const HAP=(function(){
+  const l=document.createElement('label'); l.style.display='none'; l.setAttribute('aria-hidden','true');
+  const i=document.createElement('input'); i.type='checkbox'; i.setAttribute('switch','');
+  l.appendChild(i); document.head.appendChild(l); return l;
+})();
+function haptic(){ try{ if(navigator.vibrate) navigator.vibrate(12); HAP.click(); }catch(e){} }
 
+// Ziehen am ☰-Griff: Zeile folgt dem Finger, die anderen weichen aus
+function initDrag(handle,row,idx){
+  handle.addEventListener('pointerdown',e=>{
+    if(e.button>0) return;
+    const list=document.getElementById('settingsItemsList'), sc=document.querySelector('.settings-scroll');
+    const rows=[...list.children], n=rows.length;
+    if(n<2) return;
+    e.preventDefault();
+    collectSettingsEdits();
+    const step=rows[1].offsetTop-rows[0].offsetTop;
+    const startY=e.clientY, startScroll=sc.scrollTop;
+    let lastY=startY, target=idx, raf=0;
+    handle.setPointerCapture(e.pointerId);
+    row.classList.add('dragging'); haptic();
+    const update=()=>{
+      const dy=(lastY-startY)+(sc.scrollTop-startScroll);
+      row.style.transform='translateY('+dy+'px)';
+      const t=Math.max(0,Math.min(n-1,Math.round(idx+dy/step)));
+      if(t!==target){ target=t; haptic(); }
+      rows.forEach((r,i)=>{
+        if(r===row) return;
+        let s=0;
+        if(idx<target && i>idx && i<=target) s=-step;
+        else if(idx>target && i<idx && i>=target) s=step;
+        r.style.transform=s?'translateY('+s+'px)':'';
+      });
+    };
+    const tick=()=>{
+      const r=sc.getBoundingClientRect(); let d=0;
+      if(lastY<r.top+50) d=-8; else if(lastY>r.bottom-50) d=8;
+      if(d){ sc.scrollTop+=d; update(); }
+      raf=requestAnimationFrame(tick);
+    };
+    raf=requestAnimationFrame(tick);
+    const move=ev=>{ lastY=ev.clientY; update(); };
+    const end=()=>{
+      cancelAnimationFrame(raf);
+      handle.removeEventListener('pointermove',move);
+      handle.removeEventListener('pointerup',end);
+      handle.removeEventListener('pointercancel',end);
+      if(target!==idx){ const a=settingsEditItems[settingsEditSeason]; const [it]=a.splice(idx,1); a.splice(target,0,it); haptic(); }
+      renderSettingsModal();
+    };
+    handle.addEventListener('pointermove',move);
+    handle.addEventListener('pointerup',end);
+    handle.addEventListener('pointercancel',end);
+  });
+}
+
+document.getElementById('addItemBtn').addEventListener('click',()=>{ collectSettingsEdits(); const items=settingsEditItems[settingsEditSeason]; items.push({id:Date.now(),name:String(items.length+1),price:0.00,displayName:''}); renderSettingsModal(); setTimeout(()=>{document.querySelector('.settings-scroll').scrollTop=99999;},50); });
 document.getElementById('saveSettingsBtn').addEventListener('click',()=>{ collectSettingsEdits(); state.items=settingsEditItems; saveState(); renderGrid(); closeSettingsModal(); });
+
+// ---------- EINSCANNEN ----------
+function parsePriceText(text){
+  const out=[];
+  String(text).split(/\r?\n/).forEach(raw=>{
+    const line=raw.replace(/[€|_]/g,' ').replace(/\s+/g,' ').trim();
+    const m=line.match(/^(.*?)[\s.:·…–-]*(\d{1,3}(?:[.,]\d{1,2})?)\s*(?:eur|euro)?$/i);
+    if(!m) return;
+    const price=parseFloat(m[2].replace(',','.'));
+    const label=m[1].replace(/[\s.:·…–-]+$/,'').trim();
+    if(!label||!(price>0&&price<500)) return;
+    const n=label.match(/^(\d{1,3})[.):\s-]+(.+)$/);
+    out.push(n?{name:n[1],displayName:n[2].trim(),price}:{name:label,displayName:'',price});
+  });
+  return out;
+}
+function fmtLine(it){ return (it.displayName?it.name+' '+it.displayName:it.name)+' '+it.price.toFixed(2).replace('.',','); }
+
+function loadTesseract(){
+  return new Promise((res,rej)=>{
+    if(window.Tesseract) return res();
+    const s=document.createElement('script');
+    s.src='https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js';
+    s.onload=res; s.onerror=()=>rej(new Error('offline'));
+    document.head.appendChild(s);
+  });
+}
+function prepImage(file){
+  return new Promise((res,rej)=>{
+    const img=new Image();
+    img.onload=()=>{
+      const k=Math.min(1,2000/Math.max(img.width,img.height));
+      const c=document.createElement('canvas');
+      c.width=Math.round(img.width*k); c.height=Math.round(img.height*k);
+      const x=c.getContext('2d'); x.filter='grayscale(1) contrast(1.4)';
+      x.drawImage(img,0,0,c.width,c.height);
+      URL.revokeObjectURL(img.src); res(c);
+    };
+    img.onerror=rej; img.src=URL.createObjectURL(file);
+  });
+}
+function updateScanCount(){
+  const n=parsePriceText(document.getElementById('scanText').value).length;
+  document.getElementById('scanStatus').textContent=n+' Artikel erkannt. Prüfe die Zeilen und tippe auf „Übernehmen“.';
+}
+function openScan(){
+  collectSettingsEdits();
+  document.getElementById('scanSeason').textContent=settingsEditSeason==='summer'?'☀️ Sommer':'❄️ Winter';
+  document.getElementById('scanModal').classList.add('active');
+}
+function closeScan(){ document.getElementById('scanModal').classList.remove('active'); }
+
+document.getElementById('scanOpenBtn').addEventListener('click',openScan);
+document.getElementById('scanModal').addEventListener('click',function(e){ if(e.target===this) closeScan(); });
+document.getElementById('scanPhotoBtn').addEventListener('click',()=>document.getElementById('scanFile').click());
+document.getElementById('scanText').addEventListener('input',updateScanCount);
+document.getElementById('scanFile').addEventListener('change',async e=>{
+  const f=e.target.files[0]; if(!f) return;
+  const st=document.getElementById('scanStatus');
+  try{
+    st.textContent='Lade Texterkennung …';
+    await loadTesseract();
+    const cv=await prepImage(f);
+    const r=await Tesseract.recognize(cv,'deu',{logger:m=>{ if(m.status==='recognizing text') st.textContent='Erkenne Text … '+Math.round(m.progress*100)+'%'; }});
+    const items=parsePriceText(r.data.text);
+    document.getElementById('scanText').value=items.length?items.map(fmtLine).join('\n'):r.data.text;
+    if(items.length) updateScanCount(); else st.textContent='Keine Preise erkannt. Bitte Text selbst anpassen oder ein schärferes Foto machen.';
+  }catch(err){
+    st.textContent='Das hat nicht geklappt. Bist du online? Du kannst den Text auch von Hand einfügen.';
+  }
+  e.target.value='';
+});
+document.getElementById('scanApply').addEventListener('click',()=>{
+  const items=parsePriceText(document.getElementById('scanText').value);
+  if(!items.length){ document.getElementById('scanStatus').textContent='Noch nichts erkannt: pro Zeile Gericht und Preis, z.B. „Eis 3,50“.'; return; }
+  collectSettingsEdits();
+  const mode=document.querySelector('input[name=scanMode]:checked').value;
+  const mk=(it,i)=>({id:Date.now()+i,name:it.name,displayName:it.displayName,price:it.price});
+  const cur=settingsEditItems[settingsEditSeason];
+  settingsEditItems[settingsEditSeason]=mode==='replace'?items.map(mk):cur.concat(items.map(mk));
+  renderSettingsModal(); closeScan();
+  document.querySelector('.settings-scroll').scrollTop=0;
+});
 
 function escHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 function escAttr(s){ return String(s).replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
 
 renderAll();
 </script>
+
 
 <script>
 // Cache app on first load for offline use
